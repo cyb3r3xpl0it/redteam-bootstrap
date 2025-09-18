@@ -27,6 +27,17 @@ warn() { printf "\033[1;33m[!] %s\033[0m\n" "$*"; }
 err() { printf "\033[1;31m[-] %s\033[0m\n" "$*" >&2; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
+clone_or_update() {
+  # clone_or_update <repo> <dest>
+  local url="$1" dest="$2"
+  if [ -d "$dest/.git" ]; then
+    msg "Actualizando $(basename "$dest")"
+    git -C "$dest" pull --ff-only --quiet || warn "No se pudo actualizar $dest"
+  else
+    msg "Clonando $url -> $dest"
+    git clone -q --depth 1 "$url" "$dest"
+  fi
+}
 
 usage() {
   cat <<EOF
