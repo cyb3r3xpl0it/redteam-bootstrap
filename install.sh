@@ -39,6 +39,18 @@ clone_or_update() {
   fi
 }
 
+clone_or_update_sudo() {
+  # clone_or_update_sudo <repo> <dest> (para /usr/share/wordlists)
+  local url="$1" dest="$2"
+  if [ -d "$dest/.git" ]; then
+    msg "Actualizando (sudo) $(basename "$dest")"
+    sudo git -C "$dest" pull --ff-only --quiet || warn "No se pudo actualizar $dest"
+  else
+    msg "Clonando (sudo) $url -> $dest"
+    sudo git clone -q --depth 1 "$url" "$dest"
+  fi
+}
+
 usage() {
   cat <<EOF
 Uso: $(basename "$0") <comando>
